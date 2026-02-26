@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R4L Peptides — Brand Guidelines</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0e1a;
+    color: #e8eaf0;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1a2e 60%, #0a1a1a 100%);
+    border-bottom: 1px solid #1a2a3a;
+    padding: 40px 60px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(0,200,180,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .logo-box {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #00c8b4, #0099a0);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: 900; color: #0a0e1a;
+    flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(0,200,180,0.3);
+  }
+  .header-text h1 {
+    font-size: 13px; font-weight: 600; letter-spacing: 4px;
+    color: #00c8b4; text-transform: uppercase; margin-bottom: 4px;
+  }
+  .header-text h2 {
+    font-size: 28px; font-weight: 900; color: #fff;
+  }
+  .header-text span { color: #f5e642; }
+  .doc-label {
+    margin-left: auto;
+    font-size: 11px; font-weight: 600; letter-spacing: 3px;
+    color: #4a5568; text-transform: uppercase;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1px;
+    background: #1a2230;
+  }
+
+  .cell {
+    background: #0d1220;
+    padding: 32px;
+  }
+  .cell.wide { grid-column: span 2; }
+  .cell.full { grid-column: span 3; }
+  .cell.tall { grid-row: span 2; }
+
+  .cell-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: #00c8b4;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cell-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(to right, #00c8b430, transparent);
+  }
+
+  /* COLORS */
+  .color-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .swatch {
+    flex: 1; min-width: 80px;
+  }
+  .swatch-block {
+    height: 72px; border-radius: 10px; margin-bottom: 10px;
+    position: relative; overflow: hidden;
+  }
+  .swatch-block::after {
+    content: attr(data-hex);
+    position: absolute; bottom: 8px; left: 0; right: 0;
+    text-align: center; font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.7); letter-spacing: 1px;
+  }
+  .swatch-name { font-size: 11px; font-weight: 700; color: #e8eaf0; margin-bottom: 2px; }
+  .swatch-role { font-size: 10px; color: #4a6080; }
+
+  /* TYPOGRAPHY */
+  .type-sample {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #1a2230;
+  }
+  .type-sample:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .type-meta { font-size: 10px; color: #4a6080; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* LOGO VARIANTS */
+  .logo-variants { display: flex; gap: 16px; flex-wrap: wrap; }
+  .logo-var {
+    flex: 1; min-width: 120px;
+    background: #080c18;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    border: 1px solid #1a2230;
+  }
+  .logo-var.light-bg { background: #f0f4f8; }
+  .logo-mark {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .shield {
+    width: 36px; height: 40px;
+    background: linear-gradient(135deg, #00c8b4, #0099a0);
+    clip-path: polygon(50% 0%, 100% 15%, 100% 60%, 50% 100%, 0% 60%, 0% 15%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .logo-text-r { font-size: 22px; font-weight: 900; color: #f5e642; line-height: 1; }
+  .logo-text-p { font-size: 13px; font-weight: 700; color: #fff; }
+  .logo-text-sub { font-size: 8px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
+  .logo-var-label { font-size: 10px; color: #4a6080; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* VOICE */
+  .voice-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .tag {
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  }
+  .tag.primary { background: rgba(0,200,180,0.15); color: #00c8b4; border: 1px solid #00c8b430; }
+  .tag.yellow { background: rgba(245,230,66,0.12); color: #f5e642; border: 1px solid #f5e64230; }
+  .tag.neutral { background: rgba(255,255,255,0.06); color: #8899aa; border: 1px solid #ffffff15; }
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .do, .dont {
+    padding: 12px 14px; border-radius: 8px; font-size: 11px; line-height: 1.6;
+  }
+  .do { background: rgba(0,200,180,0.08); border-left: 3px solid #00c8b4; color: #aac8c0; }
+  .dont { background: rgba(255,80,80,0.06); border-left: 3px solid #ff5050; color: #c8a0a0; }
+  .do strong, .dont strong { display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+  .do strong { color: #00c8b4; }
+  .dont strong { color: #ff5050; }
+
+  /* SPACING */
+  .spacing-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; }
+  .sp-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sp-block { background: linear-gradient(135deg, #00c8b420, #00c8b408); border: 1px dashed #00c8b440; border-radius: 4px; width: 28px; }
+  .sp-label { font-size: 9px; color: #4a6080; text-align: center; }
+  .sp-val { font-size: 10px; font-weight: 700; color: #00c8b4; }
+
+  /* ICONOGRAPHY */
+  .icon-set { display: flex; gap: 16px; flex-wrap: wrap; }
+  .icon-item {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 11px; color: #4a6080; text-align: center;
+  }
+  .icon-circle {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(0,200,180,0.1); border: 1px solid #00c8b430;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+
+  /* IMAGERY */
+  .image-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .img-rule {
+    padding: 14px; border-radius: 8px; border: 1px solid #1a2230;
+  }
+  .img-rule-title { font-size: 11px; font-weight: 700; color: #00c8b4; margin-bottom: 6px; }
+  .img-rule p { font-size: 11px; color: #5a7090; line-height: 1.6; }
+
+  /* FOOTER */
+  .footer {
+    background: #080c18;
+    border-top: 1px solid #1a2230;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer p { font-size: 11px; color: #2a3a4a; letter-spacing: 1px; }
+  .version { font-size: 11px; color: #2a3a4a; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-box">R4L</div>
+  <div class="header-text">
+    <h1>Brand Guidelines</h1>
+    <h2><span>R4L</span> Peptides</h2>
+  </div>
+  <div class="doc-label">v1.0 — 2026</div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="grid">
+
+  <!-- ROW 1 -->
+
+  <!-- COLOR PALETTE (wide) -->
+  <div class="cell wide">
+    <div class="cell-label">Color Palette</div>
+    <div class="color-row">
+      <div class="swatch">
+        <div class="swatch-block" style="background:#f5e642;" data-hex="#F5E642"></div>
+        <div class="swatch-name">Catalyst Yellow</div>
+        <div class="swatch-role">Primary Brand / R4L Mark</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:linear-gradient(135deg,#00c8b4,#0099a0);" data-hex="#00C8B4"></div>
+        <div class="swatch-name">Science Teal</div>
+        <div class="swatch-role">Shield / Accent / CTA</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#0a0e1a;" data-hex="#0A0E1A"></div>
+        <div class="swatch-name">Deep Space</div>
+        <div class="swatch-role">Primary Background</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#0d1a2e;" data-hex="#0D1A2E"></div>
+        <div class="swatch-name">Midnight Blue</div>
+        <div class="swatch-role">Surface / Cards</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#ffffff;" data-hex="#FFFFFF"></div>
+        <div class="swatch-name">Pure White</div>
+        <div class="swatch-role">Body Text / "Peptides"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO USAGE -->
+  <div class="cell">
+    <div class="cell-label">Logo Usage</div>
+    <div class="logo-variants">
+      <div class="logo-var">
+        <div class="logo-mark">
+          <div class="shield">⬡</div>
+          <div>
+            <div class="logo-text-r">R4L</div>
+            <div class="logo-text-p">Peptides</div>
+            <div class="logo-text-sub">Advanced Peptide Science</div>
+          </div>
+        </div>
+        <div class="logo-var-label">Dark (Primary)</div>
+      </div>
+      <div class="logo-var" style="background:#f0f4f8;">
+        <div class="logo-mark">
+          <div class="shield">⬡</div>
+          <div>
+            <div class="logo-text-r" style="color:#c8b800;">R4L</div>
+            <div class="logo-text-p" style="color:#0a0e1a;">Peptides</div>
+            <div class="logo-text-sub" style="color:#445;">Advanced Peptide Science</div>
+          </div>
+        </div>
+        <div class="logo-var-label" style="color:#8899aa;">Light Background</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2 -->
+
+  <!-- TYPOGRAPHY -->
+  <div class="cell">
+    <div class="cell-label">Typography</div>
+    <div class="type-sample">
+      <div class="type-meta">Display / Wordmark — Bold 900</div>
+      <div style="font-size: 32px; font-weight: 900; color: #f5e642; letter-spacing: -1px;">R4L</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-meta">Heading — Inter 700</div>
+      <div style="font-size: 18px; font-weight: 700; color: #fff;">Advanced Peptide Science</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-meta">Subheading — Inter 600</div>
+      <div style="font-size: 14px; font-weight: 600; color: #00c8b4;">Research-Grade Purity</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-meta">Body — Inter 400</div>
+      <div style="font-size: 12px; font-weight: 400; color: #8899aa; line-height: 1.7;">Precision-synthesized peptides for scientific inquiry. Every compound is verified for maximum integrity.</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-meta">Label / Caps — Inter 700, Tracked</div>
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #4a7080;">Batch ID: BPC-157-A02</div>
+    </div>
+  </div>
+
+  <!-- BRAND VOICE -->
+  <div class="cell wide">
+    <div class="cell-label">Brand Voice & Tone</div>
+    <div class="voice-tags">
+      <span class="tag primary">Scientific</span>
+      <span class="tag primary">Precise</span>
+      <span class="tag yellow">Confident</span>
+      <span class="tag yellow">Trusted</span>
+      <span class="tag neutral">Professional</span>
+      <span class="tag neutral">Direct</span>
+    </div>
+    <div class="do-dont">
+      <div class="do">
+        <strong>✓ Do</strong>
+        Use clinical, factual language that reflects research confidence. Lead with specificity — purity percentages, synthesis methods, verified batch data.
+      </div>
+      <div class="dont">
+        <strong>✗ Don't</strong>
+        Avoid vague health claims, hype language, or consumer supplement tone. Never write "miracle", "cure", or make unverified therapeutic promises.
+      </div>
+      <div class="do">
+        <strong>✓ Do</strong>
+        Write for an informed, research-minded audience. Respect their intelligence.
+      </div>
+      <div class="dont">
+        <strong>✗ Don't</strong>
+        Don't over-explain basics or use stock wellness clichés. Avoid "unlock your potential" messaging.
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3 -->
+
+  <!-- SPACING SYSTEM -->
+  <div class="cell">
+    <div class="cell-label">Spacing System</div>
+    <div class="spacing-row">
+      <div class="sp-item"><div class="sp-block" style="height:8px;"></div><div class="sp-val">4px</div><div class="sp-label">XS</div></div>
+      <div class="sp-item"><div class="sp-block" style="height:16px;"></div><div class="sp-val">8px</div><div class="sp-label">SM</div></div>
+      <div class="sp-item"><div class="sp-block" style="height:24px;"></div><div class="sp-val">16px</div><div class="sp-label">MD</div></div>
+      <div class="sp-item"><div class="sp-block" style="height:32px;"></div><div class="sp-val">24px</div><div class="sp-label">LG</div></div>
+      <div class="sp-item"><div class="sp-block" style="height:48px;"></div><div class="sp-val">32px</div><div class="sp-label">XL</div></div>
+      <div class="sp-item"><div class="sp-block" style="height:64px;"></div><div class="sp-val">48px</div><div class="sp-label">2XL</div></div>
+    </div>
+    <div style="font-size: 11px; color: #3a5060; line-height: 1.7; margin-top: 8px;">
+      Base unit: <span style="color:#00c8b4;">4px</span>. All layout spacing uses multiples of 4. Minimum touch target: <span style="color:#00c8b4;">44×44px</span>.
+    </div>
+  </div>
+
+  <!-- ICONOGRAPHY -->
+  <div class="cell">
+    <div class="cell-label">Iconography</div>
+    <div class="icon-set">
+      <div class="icon-item"><div class="icon-circle">🧬</div>DNA / Peptide</div>
+      <div class="icon-item"><div class="icon-circle">🛡️</div>Shield / Trust</div>
+      <div class="icon-item"><div class="icon-circle">⚗️</div>Lab / Science</div>
+      <div class="icon-item"><div class="icon-circle">🔬</div>Research</div>
+      <div class="icon-item"><div class="icon-circle">⚙️</div>Synthesis</div>
+    </div>
+    <div style="font-size: 11px; color: #3a5060; line-height: 1.7; margin-top: 16px;">
+      Use line-weight icons at <strong style="color:#e8eaf0;">1.5–2px stroke</strong>. Teal on dark, dark teal on light. No filled/bubbly icon sets.
+    </div>
+  </div>
+
+  <!-- IMAGERY -->
+  <div class="cell">
+    <div class="cell-label">Imagery Direction</div>
+    <div class="image-rules">
+      <div class="img-rule">
+        <div class="img-rule-title">✓ Use</div>
+        <p>3D molecular & DNA structures, macro lab photography, dark atmospheric blue-teal tones, electron microscopy textures.</p>
+      </div>
+      <div class="img-rule" style="border-color: #2a1a1a;">
+        <div class="img-rule-title" style="color: #ff6060;">✗ Avoid</div>
+        <p>Smiling athletes, stock wellness imagery, bright white clinical spaces, anything that reads as consumer supplement brand.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>R4L PEPTIDES — ADVANCED PEPTIDE SCIENCE — BRAND GUIDELINES</p>
+  <p class="version">Internal Use Only · Version 1.0 · February 2026</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+node_modules/
+studio/node_modules/
+temporary screenshots/
+
+# Reference/design files not needed in repo
+Disclaimer.jpg
+Fix.png
+Remove Box.png
+R4L Product.jpg
+www.corepeptides.com_.png
