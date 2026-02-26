@@ -2177,7 +2177,7 @@
         <div class="trust-icon">🏷️</div>
         <div class="trust-text">
           <strong>Bulk Discounts</strong>
-          <span>10% off $300+ &nbsp;·&nbsp; 20% off $500+</span>
+          <span>10% off $500+ &nbsp;·&nbsp; 25% off $1200+</span>
         </div>
       </div>
     </div>
@@ -2278,7 +2278,7 @@
         <div class="product-info">
           <div class="product-name">CJC / Ipamorelin</div>
           <div class="product-weight">5/5mg / Vial</div>
-          <div class="product-price"><span class="from">From</span>$55.00</div>
+          <div class="product-price"><span class="from">From</span>$29.00</div>
           <button class="add-to-cart">Add to Cart</button>
         </div>
       </div>
@@ -2431,7 +2431,7 @@
       </div>
 
       <!-- 18 -->
-      <div class="product-card" data-category="weight">
+      <div class="product-card" data-category="recovery">
         <div class="product-image-wrap">
           <canvas class="bottle-canvas" data-name="KLOW" data-weight="80mg"></canvas>
         </div>
@@ -2677,7 +2677,7 @@
       <div class="footer-col">
         <h4>Support</h4>
         <ul>
-          <li><a href="mailto:R4Lpeptides@gmail.com">R4Lpeptides@gmail.com</a></li>
+          <li><a href="mailto:R4LResearch@gmail.com">R4LResearch@gmail.com</a></li>
           <li><a href="#" data-policy="faq">FAQ</a></li>
           <li><a href="#" data-policy="shipping">Shipping Policy</a></li>
           <li><a href="#" data-policy="returns">Return Policy</a></li>
@@ -2702,7 +2702,78 @@
     // BOTTLE CANVAS LABEL RENDERER
     // ============================
     // Draws the real bottle image onto each canvas with a custom
-    // product label overlaid on the white text area of the vial.
+    // generic product label — no brand name, clean research aesthetic.
+
+    function drawGenericLabel(ctx, dX, dY, dW, dH, name, weight) {
+      // Overlay covers full label area (header band + white text zone)
+      const stripeW = Math.max(3, dW * 0.012);
+      const OX      = dX + dW * 0.04;
+      const OY      = dY + dH * 0.37;
+      const OW      = dW * 0.65;
+      const OH      = dH * 0.52;
+      const PAD_X   = OW * 0.09;
+      const headerH = Math.max(14, OH * 0.22);
+      const bodyY   = OY + headerH + 1;
+      const bodyH   = OH - headerH - 1;
+
+      // 1. White base
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(OX, OY, OW, OH);
+
+      // 2. Blue left accent stripe
+      ctx.fillStyle = '#1171ba';
+      ctx.fillRect(OX, OY, stripeW, OH);
+
+      // 3. Light blue-tint header band
+      ctx.fillStyle = '#e8f1fa';
+      ctx.fillRect(OX + stripeW, OY, OW - stripeW, headerH);
+
+      // 4. "RESEARCH COMPOUND" header label
+      const headerPx = Math.max(6, Math.round(dW * 0.030));
+      ctx.fillStyle   = '#1171ba';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign   = 'left';
+      ctx.font = `700 ${headerPx}px 'Montserrat', Arial, sans-serif`;
+      ctx.fillText('RESEARCH COMPOUND', OX + PAD_X, OY + headerH * 0.5);
+
+      // 5. Thin separator
+      ctx.fillStyle = 'rgba(17,113,186,0.15)';
+      ctx.fillRect(OX + stripeW, OY + headerH, OW - stripeW, 1);
+
+      // 6. Product name (auto-shrink)
+      ctx.fillStyle    = '#0a1628';
+      ctx.textBaseline = 'top';
+      const NY = bodyY + bodyH * 0.10;
+      let namePx = Math.max(10, Math.round(dW * 0.082));
+      ctx.font = `800 ${namePx}px 'Montserrat', Arial, sans-serif`;
+      while (ctx.measureText(name).width > OW - PAD_X * 2 && namePx > 10) {
+        namePx -= 2;
+        ctx.font = `800 ${namePx}px 'Montserrat', Arial, sans-serif`;
+      }
+      ctx.fillText(name, OX + PAD_X, NY);
+
+      // 7. Weight / dosage
+      const WY        = NY + namePx * 1.45;
+      const weightPx  = Math.max(7, Math.round(dW * 0.048));
+      ctx.font        = `600 ${weightPx}px 'Montserrat', Arial, sans-serif`;
+      ctx.fillStyle   = '#3a5a8a';
+      ctx.fillText(weight, OX + PAD_X, WY);
+
+      // 8. Thin divider
+      const divY = bodyY + bodyH * 0.73;
+      ctx.strokeStyle = 'rgba(17,113,186,0.18)';
+      ctx.lineWidth   = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(OX + PAD_X, divY);
+      ctx.lineTo(OX + OW - PAD_X * 0.5, divY);
+      ctx.stroke();
+
+      // 9. "For Research Use Only" disclaimer
+      const disclaimerPx = Math.max(6, Math.round(dW * 0.026));
+      ctx.font      = `500 ${disclaimerPx}px 'Montserrat', Arial, sans-serif`;
+      ctx.fillStyle = '#8899bb';
+      ctx.fillText('For Research Use Only', OX + PAD_X, divY + bodyH * 0.07);
+    }
 
     async function renderBottles() {
       // Wait for Montserrat to be available in Canvas context
@@ -2724,62 +2795,22 @@
       // relative to the drawn image area (not the full 600×600 buffer).
       const SIZE = 600;
 
-      // Proportional coords for white label text area (below R4L blue header band)
-      const IMG_OX = 0.04;   // left edge of text area (as fraction of img W)
-      const IMG_OY = 0.57;   // top of white text area — slightly above text start
-      const IMG_OW = 0.65;   // width fraction
-      const IMG_OH = 0.32;   // height fraction — covers full text block
-
-      const TEXT_COLOR = '#1a3672';
-
       document.querySelectorAll('.bottle-canvas').forEach(canvas => {
         const productName   = canvas.dataset.name   || '';
         const productWeight = canvas.dataset.weight || '';
 
-        // Use a fixed 600×600 buffer — CSS absolutely positions this to fill the card
         canvas.width  = SIZE;
         canvas.height = SIZE;
 
-        const ctx = canvas.getContext('2d');
+        const ctx   = canvas.getContext('2d');
+        const scale = Math.min(SIZE / W, SIZE / H);
+        const drawW = W * scale;
+        const drawH = H * scale;
+        const drawX = (SIZE - drawW) / 2;
+        const drawY = (SIZE - drawH) / 2;
 
-        // 1. Compute letterbox offset (object-fit:contain logic)
-        const scale   = Math.min(SIZE / W, SIZE / H);
-        const drawW   = W * scale;
-        const drawH   = H * scale;
-        const drawX   = (SIZE - drawW) / 2;
-        const drawY   = (SIZE - drawH) / 2;
-
-        // 2. Draw base bottle
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
-
-        // 3. Compute overlay position in the 600×600 buffer
-        const OX = drawX + W * scale * IMG_OX;
-        const OY = drawY + H * scale * IMG_OY;
-        const OW = W * scale * IMG_OW;
-        const OH = H * scale * IMG_OH;
-
-        // 4. White out the original text area
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(OX, OY, OW, OH);
-
-        // 5. Draw product name — auto-shrink if too wide
-        ctx.fillStyle = TEXT_COLOR;
-        ctx.textBaseline = 'top';
-        const NX = OX + drawW * 0.03;
-        const NY = OY + drawH * 0.03;
-        const WY = OY + drawH * 0.14;
-        let namePx = Math.round(drawW * 0.085);
-        ctx.font = `800 ${namePx}px 'Montserrat', Arial, sans-serif`;
-        while (ctx.measureText(productName).width > OW - drawW * 0.03 && namePx > 10) {
-          namePx -= 2;
-          ctx.font = `800 ${namePx}px 'Montserrat', Arial, sans-serif`;
-        }
-        ctx.fillText(productName, NX, NY);
-
-        // 6. Draw weight / dosage
-        let weightPx = Math.round(drawW * 0.054);
-        ctx.font = `600 ${weightPx}px 'Montserrat', Arial, sans-serif`;
-        ctx.fillText(productWeight, NX, WY);
+        drawGenericLabel(ctx, drawX, drawY, drawW, drawH, productName, productWeight);
       });
     }
 
@@ -2901,8 +2932,8 @@
       const nudgeEl       = document.getElementById('cartPromoNudge');
 
       let discountPct = 0;
-      if (subtotal >= 500)      discountPct = 20;
-      else if (subtotal >= 300) discountPct = 10;
+      if (subtotal >= 1200)    discountPct = 25;
+      else if (subtotal >= 500) discountPct = 10;
 
       const discountSaving = subtotal * (discountPct / 100);
       const finalTotal     = subtotal - discountSaving + shippingCost;
@@ -2914,12 +2945,12 @@
         nudgeEl.style.display     = 'none';
       } else {
         discountRow.style.display = 'none';
-        if (subtotal < 300) {
-          const toNext = (300 - subtotal).toFixed(2);
+        if (subtotal < 500) {
+          const toNext = (500 - subtotal).toFixed(2);
           nudgeEl.innerHTML = `Add <strong>$${toNext}</strong> more to unlock <strong>10% off</strong>`;
         } else {
-          const toNext = (500 - subtotal).toFixed(2);
-          nudgeEl.innerHTML = `Add <strong>$${toNext}</strong> more to unlock <strong>20% off</strong>`;
+          const toNext = (1200 - subtotal).toFixed(2);
+          nudgeEl.innerHTML = `Add <strong>$${toNext}</strong> more to unlock <strong>25% off</strong>`;
         }
         nudgeEl.style.display = '';
       }
@@ -2937,17 +2968,7 @@
         const dW = W*scale, dH = H*scale;
         const dX = (S-dW)/2, dY = (S-dH)/2;
         cCtx.drawImage(src, dX, dY, dW, dH);
-        const IMG_OX=0.04, IMG_OY=0.57, IMG_OW=0.65, IMG_OH=0.32;
-        const OX = dX + dW*IMG_OX, OY = dY + dH*IMG_OY;
-        const OW = dW*IMG_OW;
-        cCtx.fillStyle = '#ffffff';
-        cCtx.fillRect(OX, OY, OW, dH*IMG_OH);
-        cCtx.fillStyle = '#1a3672';
-        cCtx.textAlign = 'left';
-        cCtx.font = `800 ${Math.round(dW*0.085)}px Montserrat`;
-        cCtx.fillText(c.dataset.name, OX + dW*0.03, OY + dH*0.03 + Math.round(dW*0.085));
-        cCtx.font = `600 ${Math.round(dW*0.054)}px Montserrat`;
-        cCtx.fillText(c.dataset.weight, OX + dW*0.03, OY + dH*0.14 + Math.round(dW*0.054));
+        drawGenericLabel(cCtx, dX, dY, dW, dH, c.dataset.name, c.dataset.weight);
       });
     }
 
@@ -3081,8 +3102,8 @@
 
         const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
         let discountPct = 0;
-        if (subtotal >= 500) discountPct = 20;
-        else if (subtotal >= 300) discountPct = 10;
+        if (subtotal >= 1200)     discountPct = 25;
+        else if (subtotal >= 500) discountPct = 10;
         const discountSaving = subtotal * (discountPct / 100);
         const shippingCost   = subtotal >= 150 ? 0 : subtotal * 0.10;
         const orderTotal     = subtotal - discountSaving + shippingCost;
@@ -3111,7 +3132,7 @@
           `${shippingLine}` +
           `  ORDER TOTAL:  $${orderTotal.toFixed(2)}\n\n` +
           `${'─'.repeat(42)}\n` +
-          `Payment: Venmo @R4LPep\n` +
+          `Payment: Venmo @Shawn-Silva-17\n` +
           `Reply to customer at: ${email}`;
 
         // Loading state
@@ -3142,7 +3163,7 @@
         btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Place Order';
 
         if (!success) {
-          errEl.textContent = 'Could not send — please email R4Lpeptides@gmail.com directly.';
+          errEl.textContent = 'Could not send — please email R4LResearch@gmail.com directly.';
           errEl.classList.add('visible');
           return;
         }
@@ -3169,7 +3190,7 @@
               All sales are final. We do not accept returns or issue refunds under any circumstances.
             </div>
             <p>Due to the nature of research compounds and the strict handling requirements necessary to maintain product integrity, <strong>Recovery 4 Life does not accept returns</strong> on any orders.</p>
-            <p>If you have a concern about your order — such as a damaged shipment or missing item — please contact us directly at <a href="mailto:R4Lpeptides@gmail.com" style="color:#1171ba">R4Lpeptides@gmail.com</a> and we will do our best to resolve the issue.</p>
+            <p>If you have a concern about your order — such as a damaged shipment or missing item — please contact us directly at <a href="mailto:R4LResearch@gmail.com" style="color:#1171ba">R4LResearch@gmail.com</a> and we will do our best to resolve the issue.</p>
             <p>We encourage all customers to review their cart carefully before completing an order.</p>`
         },
         faq: {
@@ -3186,9 +3207,9 @@
             <h3>Do you ship discreetly?</h3>
             <p>Yes. All orders are packaged professionally and shipped directly to your door with no indication of the contents on the outside of the package.</p>
             <h3>How do I place an order?</h3>
-            <p>Add your desired items to the cart, proceed to checkout, fill in your contact and shipping information, then send payment via Venmo to <strong>@R4LPep</strong>. Your order will be processed within 1–3 business days of payment confirmation.</p>
+            <p>Add your desired items to the cart, proceed to checkout, fill in your contact and shipping information, then send payment via Venmo to <strong>@Shawn-Silva-17</strong>. Your order will be processed within 1–3 business days of payment confirmation.</p>
             <h3>How do I contact you?</h3>
-            <p>Email us anytime at <a href="mailto:R4Lpeptides@gmail.com" style="color:#1171ba">R4Lpeptides@gmail.com</a>.</p>`
+            <p>Email us anytime at <a href="mailto:R4LResearch@gmail.com" style="color:#1171ba">R4LResearch@gmail.com</a>.</p>`
         },
         shipping: {
           title: 'Shipping Policy',
@@ -3205,7 +3226,7 @@
             <h3>Packaging</h3>
             <p>All orders are packaged discreetly with no identifying information on the exterior of the package. Product integrity is maintained throughout transit.</p>
             <h3>Questions?</h3>
-            <p>Contact us at <a href="mailto:R4Lpeptides@gmail.com" style="color:#1171ba">R4Lpeptides@gmail.com</a> for any shipping-related inquiries.</p>`
+            <p>Contact us at <a href="mailto:R4LResearch@gmail.com" style="color:#1171ba">R4LResearch@gmail.com</a> for any shipping-related inquiries.</p>`
         },
         privacy: {
           title: 'Privacy Policy',
@@ -3222,7 +3243,7 @@
             <h3>Communications</h3>
             <p>We will only contact you regarding your order. We do not send unsolicited marketing emails.</p>
             <h3>Contact</h3>
-            <p>If you have any privacy concerns, please reach out at <a href="mailto:R4Lpeptides@gmail.com" style="color:#1171ba">R4Lpeptides@gmail.com</a>.</p>`
+            <p>If you have any privacy concerns, please reach out at <a href="mailto:R4LResearch@gmail.com" style="color:#1171ba">R4LResearch@gmail.com</a>.</p>`
         },
         tos: {
           title: 'Terms of Service',
@@ -3237,13 +3258,13 @@
             <h3>Eligibility</h3>
             <p>You must be 18 years of age or older and a qualified researcher or licensed professional to purchase from Recovery 4 Life. By placing an order, you confirm that you meet these requirements and will use products exclusively for lawful research purposes.</p>
             <h3>Payment</h3>
-            <p>Payment is accepted via Venmo (@R4LPep). Orders are processed only after payment is confirmed. All sales are final — no refunds or returns.</p>
+            <p>Payment is accepted via Venmo (@Shawn-Silva-17). Orders are processed only after payment is confirmed. All sales are final — no refunds or returns.</p>
             <h3>Limitation of Liability</h3>
             <p>Recovery 4 Life shall not be held liable for any damages, injuries, or legal consequences resulting from the misuse of products. The buyer assumes full responsibility for compliance with all applicable laws in their jurisdiction.</p>
             <h3>Changes to Terms</h3>
             <p>Recovery 4 Life reserves the right to update these Terms at any time. Continued use of the site constitutes acceptance of any revised Terms.</p>
             <h3>Contact</h3>
-            <p>Questions? Email <a href="mailto:R4Lpeptides@gmail.com" style="color:#1171ba">R4Lpeptides@gmail.com</a>.</p>`
+            <p>Questions? Email <a href="mailto:R4LResearch@gmail.com" style="color:#1171ba">R4LResearch@gmail.com</a>.</p>`
         }
       };
 
@@ -3488,14 +3509,7 @@
           const dW = W*scale, dH = H*scale;
           const dX = (SIZE-dW)/2, dY = (SIZE-dH)/2;
           ctx.drawImage(src, dX, dY, dW, dH);
-          const IMG_OX=0.04, IMG_OY=0.57, IMG_OW=0.65, IMG_OH=0.32;
-          const OX=dX+dW*IMG_OX, OY=dY+dH*IMG_OY, OW=dW*IMG_OW, OH=dH*IMG_OH;
-          ctx.fillStyle='#ffffff'; ctx.fillRect(OX,OY,OW,OH);
-          ctx.fillStyle='#1a3672'; ctx.textAlign='left';
-          ctx.font=`800 ${Math.round(dW*0.085)}px Montserrat`;
-          ctx.fillText(name, OX+dW*0.03, OY+dH*0.03+Math.round(dW*0.085));
-          ctx.font=`600 ${Math.round(dW*0.054)}px Montserrat`;
-          ctx.fillText(weight, OX+dW*0.03, OY+dH*0.14+Math.round(dW*0.054));
+          drawGenericLabel(ctx, dX, dY, dW, dH, name, weight);
         }
 
         document.getElementById('pdpOverlay').classList.add('open');
@@ -3640,30 +3654,10 @@
         }).catch(function(){});
 
       // ── Site settings ─────────────────────────────────────────────────
-      sanityFetch('*[_type == "siteSettings"][0]{venmoHandle,contactEmail,freeShippingThreshold,shippingCost}')
+      sanityFetch('*[_type == "siteSettings"][0]{freeShippingThreshold,shippingCost}')
         .then(function(s) {
           if (!s) return;
-
-          // Venmo handle
-          if (s.venmoHandle) {
-            document.querySelectorAll('.order-modal-venmo').forEach(function(el) {
-              el.textContent = s.venmoHandle;
-            });
-            // Also patch hardcoded Venmo references in policy text (handled at runtime)
-            window._r4l_venmo = s.venmoHandle;
-          }
-
-          // Contact email — update all mailto links and visible email text
-          if (s.contactEmail) {
-            document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
-              a.href = 'mailto:' + s.contactEmail;
-              // Only replace text if it looks like an email address
-              if (a.textContent.includes('@')) a.textContent = s.contactEmail;
-            });
-            window._r4l_email = s.contactEmail;
-          }
-
-          // Shipping threshold + cost
+          // Shipping threshold + cost only — email and Venmo are hardcoded in the HTML
           if (s.freeShippingThreshold !== undefined) window._r4l_freeShipAt = s.freeShippingThreshold;
           if (s.shippingCost !== undefined)           window._r4l_shipCost   = s.shippingCost;
         }).catch(function(){});
@@ -3911,13 +3905,13 @@
       <div class="order-modal-step">
         <div class="order-modal-step-label">Step 2 — Send Payment via Venmo</div>
         <p>Venmo the total below to:</p>
-        <div class="order-modal-venmo">@R4LPep</div>
+        <div class="order-modal-venmo">@Shawn-Silva-17</div>
         <div class="order-modal-total" id="modalTotal">$0.00</div>
       </div>
 
       <p class="order-modal-note">
         Your order will be processed within <strong style="color:rgba(255,255,255,0.7)">1–3 business days</strong> once payment is received.<br><br>
-        Questions? Email us at <a href="mailto:R4Lpeptides@gmail.com">R4Lpeptides@gmail.com</a>
+        Questions? Email us at <a href="mailto:R4LResearch@gmail.com">R4LResearch@gmail.com</a>
       </p>
 
       <button class="order-modal-paid-btn" id="paymentSentBtn">
